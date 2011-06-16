@@ -1,0 +1,314 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AD58A14513A794FD0070162E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD58A14413A794FD0070162E /* UIKit.framework */; };
+		AD58A14713A794FD0070162E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD58A14613A794FD0070162E /* Foundation.framework */; };
+		AD58A14913A794FD0070162E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD58A14813A794FD0070162E /* CoreGraphics.framework */; };
+		AD58A14F13A794FD0070162E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD58A14D13A794FD0070162E /* InfoPlist.strings */; };
+		AD58A15213A794FD0070162E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AD58A15113A794FD0070162E /* main.m */; };
+		AD58A15513A794FD0070162E /* CarouselViewDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD58A15413A794FD0070162E /* CarouselViewDemoAppDelegate.m */; };
+		AD58A15813A794FD0070162E /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD58A15613A794FD0070162E /* MainWindow.xib */; };
+		AD58A15B13A794FD0070162E /* CarouselViewDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD58A15A13A794FD0070162E /* CarouselViewDemoViewController.m */; };
+		AD58A15E13A794FD0070162E /* CarouselViewDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD58A15C13A794FD0070162E /* CarouselViewDemoViewController.xib */; };
+		AD58A16713A795580070162E /* CarouselView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD58A16613A795580070162E /* CarouselView.m */; };
+		AD58A16B13A7CB020070162E /* CarouselViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AD58A16A13A7CB020070162E /* CarouselViewCell.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AD58A14013A794FD0070162E /* CarouselViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarouselViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD58A14413A794FD0070162E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		AD58A14613A794FD0070162E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AD58A14813A794FD0070162E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		AD58A14C13A794FD0070162E /* CarouselViewDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CarouselViewDemo-Info.plist"; sourceTree = "<group>"; };
+		AD58A14E13A794FD0070162E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AD58A15013A794FD0070162E /* CarouselViewDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CarouselViewDemo-Prefix.pch"; sourceTree = "<group>"; };
+		AD58A15113A794FD0070162E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AD58A15313A794FD0070162E /* CarouselViewDemoAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CarouselViewDemoAppDelegate.h; sourceTree = "<group>"; };
+		AD58A15413A794FD0070162E /* CarouselViewDemoAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CarouselViewDemoAppDelegate.m; sourceTree = "<group>"; };
+		AD58A15713A794FD0070162E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		AD58A15913A794FD0070162E /* CarouselViewDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CarouselViewDemoViewController.h; sourceTree = "<group>"; };
+		AD58A15A13A794FD0070162E /* CarouselViewDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CarouselViewDemoViewController.m; sourceTree = "<group>"; };
+		AD58A15D13A794FD0070162E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CarouselViewDemoViewController.xib; sourceTree = "<group>"; };
+		AD58A16513A795580070162E /* CarouselView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarouselView.h; sourceTree = "<group>"; };
+		AD58A16613A795580070162E /* CarouselView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarouselView.m; sourceTree = "<group>"; };
+		AD58A16913A7CB020070162E /* CarouselViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CarouselViewCell.h; sourceTree = "<group>"; };
+		AD58A16A13A7CB020070162E /* CarouselViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CarouselViewCell.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AD58A13D13A794FD0070162E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD58A14513A794FD0070162E /* UIKit.framework in Frameworks */,
+				AD58A14713A794FD0070162E /* Foundation.framework in Frameworks */,
+				AD58A14913A794FD0070162E /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AD58A13513A794FD0070162E = {
+			isa = PBXGroup;
+			children = (
+				AD58A14A13A794FD0070162E /* CarouselViewDemo */,
+				AD58A14313A794FD0070162E /* Frameworks */,
+				AD58A14113A794FD0070162E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AD58A14113A794FD0070162E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A14013A794FD0070162E /* CarouselViewDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AD58A14313A794FD0070162E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A14413A794FD0070162E /* UIKit.framework */,
+				AD58A14613A794FD0070162E /* Foundation.framework */,
+				AD58A14813A794FD0070162E /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AD58A14A13A794FD0070162E /* CarouselViewDemo */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A16813A7CAD30070162E /* CarouselViewCell */,
+				AD58A16413A7950D0070162E /* CarouselView */,
+				AD58A15913A794FD0070162E /* CarouselViewDemoViewController.h */,
+				AD58A15A13A794FD0070162E /* CarouselViewDemoViewController.m */,
+				AD58A15C13A794FD0070162E /* CarouselViewDemoViewController.xib */,
+				AD58A15313A794FD0070162E /* CarouselViewDemoAppDelegate.h */,
+				AD58A15413A794FD0070162E /* CarouselViewDemoAppDelegate.m */,
+				AD58A15613A794FD0070162E /* MainWindow.xib */,
+				AD58A14B13A794FD0070162E /* Supporting Files */,
+			);
+			path = CarouselViewDemo;
+			sourceTree = "<group>";
+		};
+		AD58A14B13A794FD0070162E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A14C13A794FD0070162E /* CarouselViewDemo-Info.plist */,
+				AD58A14D13A794FD0070162E /* InfoPlist.strings */,
+				AD58A15013A794FD0070162E /* CarouselViewDemo-Prefix.pch */,
+				AD58A15113A794FD0070162E /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AD58A16413A7950D0070162E /* CarouselView */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A16513A795580070162E /* CarouselView.h */,
+				AD58A16613A795580070162E /* CarouselView.m */,
+			);
+			name = CarouselView;
+			sourceTree = "<group>";
+		};
+		AD58A16813A7CAD30070162E /* CarouselViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				AD58A16913A7CB020070162E /* CarouselViewCell.h */,
+				AD58A16A13A7CB020070162E /* CarouselViewCell.m */,
+			);
+			name = CarouselViewCell;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AD58A13F13A794FD0070162E /* CarouselViewDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD58A16113A794FD0070162E /* Build configuration list for PBXNativeTarget "CarouselViewDemo" */;
+			buildPhases = (
+				AD58A13C13A794FD0070162E /* Sources */,
+				AD58A13D13A794FD0070162E /* Frameworks */,
+				AD58A13E13A794FD0070162E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CarouselViewDemo;
+			productName = CarouselViewDemo;
+			productReference = AD58A14013A794FD0070162E /* CarouselViewDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AD58A13713A794FD0070162E /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = AD58A13A13A794FD0070162E /* Build configuration list for PBXProject "CarouselViewDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AD58A13513A794FD0070162E;
+			productRefGroup = AD58A14113A794FD0070162E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AD58A13F13A794FD0070162E /* CarouselViewDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AD58A13E13A794FD0070162E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD58A14F13A794FD0070162E /* InfoPlist.strings in Resources */,
+				AD58A15813A794FD0070162E /* MainWindow.xib in Resources */,
+				AD58A15E13A794FD0070162E /* CarouselViewDemoViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AD58A13C13A794FD0070162E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD58A15213A794FD0070162E /* main.m in Sources */,
+				AD58A15513A794FD0070162E /* CarouselViewDemoAppDelegate.m in Sources */,
+				AD58A15B13A794FD0070162E /* CarouselViewDemoViewController.m in Sources */,
+				AD58A16713A795580070162E /* CarouselView.m in Sources */,
+				AD58A16B13A7CB020070162E /* CarouselViewCell.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AD58A14D13A794FD0070162E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD58A14E13A794FD0070162E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		AD58A15613A794FD0070162E /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD58A15713A794FD0070162E /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		AD58A15C13A794FD0070162E /* CarouselViewDemoViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD58A15D13A794FD0070162E /* en */,
+			);
+			name = CarouselViewDemoViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AD58A15F13A794FD0070162E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		AD58A16013A794FD0070162E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		AD58A16213A794FD0070162E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CarouselViewDemo/CarouselViewDemo-Prefix.pch";
+				INFOPLIST_FILE = "CarouselViewDemo/CarouselViewDemo-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AD58A16313A794FD0070162E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CarouselViewDemo/CarouselViewDemo-Prefix.pch";
+				INFOPLIST_FILE = "CarouselViewDemo/CarouselViewDemo-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AD58A13A13A794FD0070162E /* Build configuration list for PBXProject "CarouselViewDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD58A15F13A794FD0070162E /* Debug */,
+				AD58A16013A794FD0070162E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD58A16113A794FD0070162E /* Build configuration list for PBXNativeTarget "CarouselViewDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD58A16213A794FD0070162E /* Debug */,
+				AD58A16313A794FD0070162E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AD58A13713A794FD0070162E /* Project object */;
+}
