@@ -86,8 +86,8 @@ static float ANIMATION_SPEED = 0.3;
 
 - (void)setNumberOfColumnsFromDelegate {
 
-	if ([_dataSource respondsToSelector:@selector(numberOfColumns)]) {
-		_numberOfColumns = [_dataSource numberOfColumns];
+	if ([_dataSource respondsToSelector:@selector(numberOfColumnsForCarouselView:)]) {
+		_numberOfColumns = [_dataSource numberOfColumnsForCarouselView:self];
 		[self resizeScrollView];
 	}
 }

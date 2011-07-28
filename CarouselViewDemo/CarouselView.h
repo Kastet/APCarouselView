@@ -26,7 +26,7 @@ typedef enum {
 
 @protocol CarouselViewDataSource <NSObject>
 
-- (NSInteger)numberOfColumns;
+- (NSInteger)numberOfColumnsForCarouselView:(CarouselView *)carouselView;
 - (CarouselViewCell *)carouselView:(CarouselView *)carouselView cellForColumnAtIndex:(NSInteger)index;
 
 @end

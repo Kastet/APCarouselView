@@ -74,7 +74,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 #pragma mark - Carousel DataSource
 
-- (NSInteger)numberOfColumns {
+- (NSInteger)numberOfColumnsForCarouselView:(CarouselView *)carouselView {
 
     return [_dataSourceArray count];
 }
