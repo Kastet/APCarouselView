@@ -56,7 +56,6 @@ static float ANIMATION_SPEED = 0.3;
         // defaults values
         _numberOfColumns = 0;
         _columnWidth = 192;
-        _numberOfVisibleCells = ceil(_scrollView.frame.size.width / _columnWidth);
         _indexOfSelectedCell = -1;
         
 		[self setNumberOfColumnsFromDelegate];
@@ -78,6 +77,14 @@ static float ANIMATION_SPEED = 0.3;
 }
 
 #pragma mark - Private
+
+- (void)removeHiddenView:(UIView *)view
+{
+	if (_scrollView.contentOffset.x > 0 && !CGRectIntersectsRect(view.frame, _scrollView.bounds)) {
+		[_recyclePool addObject:view];
+		[view removeFromSuperview];
+	}
+}
 
 - (void)resizeScrollView {
 
@@ -129,10 +136,7 @@ static float ANIMATION_SPEED = 0.3;
     
     // remove cells that are no longer visible
     for(UIView *v in _visibleCells) {
-        if (_scrollView.contentOffset.x > 0 && !CGRectIntersectsRect(v.frame, _scrollView.bounds)) {
-            [_recyclePool addObject:v];
-            [v removeFromSuperview];
-        }
+		[self removeHiddenView:v];
     }
     [_visibleCells minusSet:_recyclePool];
     
@@ -206,6 +210,9 @@ static float ANIMATION_SPEED = 0.3;
 					 }
 					 completion:^(BOOL finished) {
 						 if (block) block(finished);
+						 for (UIView *view in cellsToMove) {
+							 [self removeHiddenView:view];
+						 }
 					 }];
 }
 

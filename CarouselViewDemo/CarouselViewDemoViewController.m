@@ -31,9 +31,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     [super viewDidLoad];
     
 	[_removeSelectedButton setEnabled:NO];
-	[_removeSelectedButtonFade setEnabled:NO];
-	[_removeSelectedButtonTop setEnabled:NO];
-	[_removeSelectedButtonBottom setEnabled:NO];
 	
     _carouselView = [[CarouselView alloc] initWithFrame:CGRectMake(10, 200, 738, 200) 
                                              dataSource:self 
@@ -110,9 +107,6 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 
 - (void)carouselView:(CarouselView *)carouselView didSelectCellAtIndex:(NSInteger)index {
 	[_removeSelectedButton setEnabled:YES];
-	[_removeSelectedButtonFade setEnabled:YES];
-	[_removeSelectedButtonTop setEnabled:YES];
-	[_removeSelectedButtonBottom setEnabled:YES];
 }
 
 #pragma - Helper Methods
@@ -133,28 +127,11 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
     [_carouselView cleanCellsRecyclePool];
 }
 
-- (void)addColumnWithAnimation:(APCarouselViewColumnAnimation)animation
-{
+- (IBAction)addColumn {
 	NSNumber *index = [NSNumber numberWithInt:0];
 	NSString *newObj = [self randomString];
 	[_dataSourceArray insertObject:newObj atIndex:[index intValue]];
-	[_carouselView insertColumnsAtIndexes:[NSArray arrayWithObject:index] withColumnAnimation:animation];
-}
-
-- (IBAction)addColumn {
-	[self addColumnWithAnimation:APCarouselViewColumnAnimationNone];
-}
-
-- (IBAction)addColumnFade {
-	[self addColumnWithAnimation:APCarouselViewColumnAnimationFade];
-}
-
-- (IBAction)addColumnTop {
-	[self addColumnWithAnimation:APCarouselViewColumnAnimationTop];
-}
-
-- (IBAction)addColumnBottom {
-	[self addColumnWithAnimation:APCarouselViewColumnAnimationBottom];
+	[_carouselView insertColumnsAtIndexes:[NSArray arrayWithObject:index] withColumnAnimation:_animationSegmentedControl.selectedSegmentIndex];
 }
 
 - (IBAction)addMultipleColumnsFade {
@@ -166,34 +143,15 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 		[array addObject:[NSNumber numberWithInt:i]];
 	}
 	
-	[_carouselView insertColumnsAtIndexes:array withColumnAnimation:APCarouselViewColumnAnimationFade];
-}
-
-- (void)removeSelectedColumnWithAnimation:(APCarouselViewColumnAnimation)animation {
-	NSNumber *selectedIndex = [NSNumber numberWithInt:[_carouselView indexOfSelectedCell]];
-	[_dataSourceArray removeObjectAtIndex:[selectedIndex intValue]];
-	[_carouselView deleteColumnsAtIndexes:[NSArray arrayWithObject:selectedIndex] withColumnAnimation:animation];
-	
-	[_removeSelectedButton setEnabled:NO];
-	[_removeSelectedButtonFade setEnabled:NO];
-	[_removeSelectedButtonTop setEnabled:NO];
-	[_removeSelectedButtonBottom setEnabled:NO];
+	[_carouselView insertColumnsAtIndexes:array withColumnAnimation:_animationSegmentedControl.selectedSegmentIndex];
 }
 
 - (IBAction)removeSelectedColumn {
-	[self removeSelectedColumnWithAnimation:APCarouselViewColumnAnimationNone];
-}
-
-- (IBAction)removeSelectedColumnFade {
-	[self removeSelectedColumnWithAnimation:APCarouselViewColumnAnimationFade];
-}
-
-- (IBAction)removeSelectedColumnTop {
-	[self removeSelectedColumnWithAnimation:APCarouselViewColumnAnimationTop];
-}
-
-- (IBAction)removeSelectedColumnBottom {
-	[self removeSelectedColumnWithAnimation:APCarouselViewColumnAnimationBottom];
+	NSNumber *selectedIndex = [NSNumber numberWithInt:[_carouselView indexOfSelectedCell]];
+	[_dataSourceArray removeObjectAtIndex:[selectedIndex intValue]];
+	[_carouselView deleteColumnsAtIndexes:[NSArray arrayWithObject:selectedIndex] withColumnAnimation:_animationSegmentedControl.selectedSegmentIndex];
+	
+	[_removeSelectedButton setEnabled:NO];
 }
 
 - (IBAction)removeMultipleColumnsFade {
@@ -215,7 +173,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 		[array addObject:[NSNumber numberWithInt:i]];
 	}
 	
-	[_carouselView deleteColumnsAtIndexes:array withColumnAnimation:APCarouselViewColumnAnimationFade];
+	[_carouselView deleteColumnsAtIndexes:array withColumnAnimation:_animationSegmentedControl.selectedSegmentIndex];
 	
 }
 
