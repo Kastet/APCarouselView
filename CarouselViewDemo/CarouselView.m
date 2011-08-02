@@ -14,6 +14,9 @@
 - (void)resizeScrollView;
 - (void)setNumberOfColumnsFromDelegate;
 - (CarouselViewCell *)visibleCellForIndex:(NSInteger)index;
+- (BOOL)isColumnVisibleForIndex:(NSInteger)index;
+- (NSInteger)firstVisibleIndex;
+- (NSInteger)lastVisibleIndex;
 
 @end
 
@@ -129,6 +132,24 @@ static float ANIMATION_SPEED = 0.3;
 	return cell;
 }
 
+- (BOOL)isColumnVisibleForIndex:(NSInteger)index {
+	return (index >= [self firstVisibleIndex] && index <= [self lastVisibleIndex]);
+}
+
+- (NSInteger)firstVisibleIndex {
+	NSInteger firstVisibleIndex = MAX(floorf(CGRectGetMinX(_scrollView.bounds) / _columnWidth ), 0);
+	NSLog(@"[%@ %@] firstVisibleIndex:%d", [self class], NSStringFromSelector(_cmd), firstVisibleIndex);
+	
+	return firstVisibleIndex; 
+}
+
+- (NSInteger)lastVisibleIndex {
+	NSInteger lastVisibleIndex = MIN(floorf((CGRectGetMaxX(_scrollView.bounds) - 1) / _columnWidth ) + 1, _numberOfColumns);
+	NSLog(@"[%@ %@] lastVisibleIndex:%d", [self class], NSStringFromSelector(_cmd), lastVisibleIndex);
+	
+	return lastVisibleIndex;
+}
+
 - (void)layoutSubviews {
 
     if (self.willRotateCalled == YES)
@@ -144,12 +165,8 @@ static float ANIMATION_SPEED = 0.3;
         return;
     
     // tile missing cells
-    NSUInteger firstColumn = floorf( CGRectGetMinX(_scrollView.bounds) / _columnWidth );
-    firstColumn = MAX(firstColumn, 0);
-	
-    NSUInteger lastColumn = floorf( (CGRectGetMaxX(_scrollView.bounds) - 1) / _columnWidth ) + 1;
-    lastColumn = MIN(lastColumn, _numberOfColumns);
-    
+	NSUInteger firstColumn = [self firstVisibleIndex];
+	NSUInteger lastColumn = [self lastVisibleIndex];    
     
     // cells layout peforms inside animation block with zero-duration to exclude animation inside animation block that inited by rotation event
     [UIView animateWithDuration:0 
@@ -186,8 +203,8 @@ static float ANIMATION_SPEED = 0.3;
 	{
 		// Do we have more cells off screen?
 		if (_numberOfColumns > maxVisibleIndex + 1) {
-			NSUInteger lastColumn = floorf( (CGRectGetMaxX(_scrollView.bounds) - 1) / _columnWidth );
-			lastColumn = MIN(lastColumn, _numberOfColumns);
+			
+			NSUInteger lastColumn = [self lastVisibleIndex];
 			
 			CarouselViewCell *cell = [self cellForIndex:lastColumn];
 
@@ -359,16 +376,19 @@ static float ANIMATION_SPEED = 0.3;
 {
 	// Multiple Inserts needs work
 	for (NSNumber *index in indexes) {
-		CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
-		
-		if (cell) {
-			[self slideCellsFromIndex:[index intValue] forInsert:YES completion:^(BOOL finished){ 
-				[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
-			}];			
-		}
-		else
+		if ([self isColumnVisibleForIndex:[index intValue]])
 		{
-			[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
+			CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
+			
+			if (cell) {
+				[self slideCellsFromIndex:[index intValue] forInsert:YES completion:^(BOOL finished){ 
+					[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
+				}];			
+			}
+			else
+			{
+				[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
+			}
 		}
 	}
 }
@@ -378,23 +398,31 @@ static float ANIMATION_SPEED = 0.3;
 	
 	// Multiple Deletes needs work
 	for (NSNumber *index in indexes) {
-		CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
-		if (cell) {
-			if ([index intValue] == _indexOfSelectedCell) {
-				_indexOfSelectedCell = -1;
+		if ([self isColumnVisibleForIndex:[index intValue]] || [index intValue] < [self firstVisibleIndex])
+		{
+			CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
+			if (cell) {				
+				[self animateCellAtIndex:[index intValue] 
+							   animation:animation 
+							   forInsert:NO 
+							  completion:^(BOOL finished){
+								  [cell removeFromSuperview];
+								  cell.alpha = 1.0;
+								  _numberOfColumns--;
+								  [self slideCellsFromIndex:[index intValue] forInsert:NO];
+								  [_recyclePool addObject:cell];
+								  [_visibleCells removeObject:cell];
+							  }];
 			}
-			
-			[self animateCellAtIndex:[index intValue] 
-						   animation:animation 
-						   forInsert:NO 
-						  completion:^(BOOL finished){
-							  [cell removeFromSuperview];
-							  cell.alpha = 1.0;
-  							  _numberOfColumns--;
-							  [self slideCellsFromIndex:[index intValue] forInsert:NO];
-							  [_recyclePool addObject:cell];
-							  [_visibleCells removeObject:cell];
-						  }];
+		}
+		else
+		{
+			_numberOfColumns--;
+			[self resizeScrollView];
+		}
+		
+		if ([index intValue] == _indexOfSelectedCell) {
+			_indexOfSelectedCell = -1;
 		}
 	}
 }
