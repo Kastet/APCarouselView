@@ -134,7 +134,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	[_carouselView insertColumnsAtIndexes:[NSArray arrayWithObject:index] withColumnAnimation:_animationSegmentedControl.selectedSegmentIndex];
 }
 
-- (IBAction)addMultipleColumnsFade {
+- (IBAction)addMultipleColumns {
 	NSMutableArray *array = [NSMutableArray array];
 	
 	for (int i = 0; i < 5; i++) {
@@ -154,7 +154,7 @@ NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 	[_removeSelectedButton setEnabled:NO];
 }
 
-- (IBAction)removeMultipleColumnsFade {
+- (IBAction)removeMultipleColumns {
 	if ([_dataSourceArray count] < 3) {
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Not Enough Data" 
 														message:@"Need at least 3 columns to be able to delete multiple" 
