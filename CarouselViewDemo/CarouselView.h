@@ -10,6 +10,14 @@
 
 @class CarouselView;
 
+typedef enum {
+	APCarouselViewColumnAnimationNone,
+	APCarouselViewColumnAnimationFade,
+	APCarouselViewColumnAnimationTop,
+	APCarouselViewColumnAnimationBottom
+} APCarouselViewColumnAnimation;
+
+
 @protocol CarouselViewDelegate <NSObject>
 
 - (void)carouselView:(CarouselView *)carouselView didSelectCellAtIndex:(NSInteger)index;
@@ -18,8 +26,8 @@
 
 @protocol CarouselViewDataSource <NSObject>
 
-- (NSInteger)numberOfColonms;
-- (CarouselViewCell *)carouselView:(CarouselView *)carouselView cellForColomnAtIndex:(NSInteger)index;
+- (NSInteger)numberOfColumnsForCarouselView:(CarouselView *)carouselView;
+- (CarouselViewCell *)carouselView:(CarouselView *)carouselView cellForColumnAtIndex:(NSInteger)index;
 
 @end
 
@@ -28,7 +36,7 @@
 
     UIScrollView *_scrollView;
     
-    NSInteger _numberOfColonms;
+    NSInteger _numberOfColumns;
     NSInteger _numberOfVisibleCells;
     
     NSMutableSet *_visibleCells;
@@ -37,7 +45,7 @@
 
 @property (nonatomic, assign) id<CarouselViewDataSource> dataSource;
 @property (nonatomic, assign) id<CarouselViewDelegate> delegate;
-@property (nonatomic) CGFloat colomnWidth;
+@property (nonatomic) CGFloat columnWidth;
 
 // flag specifies if - (void)willRotateToInterfaceOrientation:duration: caused method - (void)layoutSubviews
 // need to fix sharp removing invisible cells 
@@ -48,6 +56,9 @@
 - (id)initWithFrame:(CGRect)frame dataSource:(id)dataSource delegate:(id)delegate;
 - (CarouselViewCell *)dequeueReusableCell;
 - (void)cleanCellsRecyclePool;
+
+- (void)insertColumnsAtIndexes:(NSArray *)indexes withColumnAnimation:(APCarouselViewColumnAnimation)animation;
+- (void)deleteColumnsAtIndexes:(NSArray *)indexes withColumnAnimation:(APCarouselViewColumnAnimation)animation;
 
 - (NSArray *)visibleCells;
 

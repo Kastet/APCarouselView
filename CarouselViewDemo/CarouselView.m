@@ -11,20 +11,28 @@
 
 @interface CarouselView()
 
+- (void)resizeScrollView;
+- (void)setNumberOfColumnsFromDelegate;
 - (CarouselViewCell *)visibleCellForIndex:(NSInteger)index;
+- (BOOL)isColumnVisibleForIndex:(NSInteger)index;
+- (NSInteger)firstVisibleIndex;
+- (NSInteger)lastVisibleIndex;
 
 @end
 
 @implementation CarouselView
 
 @synthesize dataSource = _dataSource, delegate = _delegate;
-@synthesize colomnWidth = _colomnWidth;
+@synthesize columnWidth = _columnWidth;
 @synthesize willRotateCalled;
 @synthesize indexOfSelectedCell = _indexOfSelectedCell;
+
+static float ANIMATION_SPEED = 0.3;
 
 #pragma mark - Init
 
 - (id)initWithFrame:(CGRect)frame dataSource:(id)dataSource delegate:(id)delegate {
+
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -49,15 +57,11 @@
         [self addSubview:_scrollView];
         
         // defaults values
-        _numberOfColonms = 0;
-        _colomnWidth = 192;
-        _numberOfVisibleCells = ceil(_scrollView.frame.size.width / _colomnWidth);
+        _numberOfColumns = 0;
+        _columnWidth = 192;
         _indexOfSelectedCell = -1;
         
-        if ([_dataSource respondsToSelector:@selector(numberOfColonms)]) {
-            _numberOfColonms = [_dataSource numberOfColonms];
-            _scrollView.contentSize = CGSizeMake(_colomnWidth * _numberOfColonms, self.frame.size.height);
-        }
+		[self setNumberOfColumnsFromDelegate];
     }
     return self;
 }
@@ -77,8 +81,29 @@
 
 #pragma mark - Private
 
+- (void)removeHiddenView:(UIView *)view
+{
+	if (_scrollView.contentOffset.x > 0 && !CGRectIntersectsRect(view.frame, _scrollView.bounds)) {
+		[_recyclePool addObject:view];
+		[view removeFromSuperview];
+	}
+}
+
+- (void)resizeScrollView {
+
+	_scrollView.contentSize = CGSizeMake(_columnWidth * _numberOfColumns, self.frame.size.height);
+}
+
+- (void)setNumberOfColumnsFromDelegate {
+
+	if ([_dataSource respondsToSelector:@selector(numberOfColumnsForCarouselView:)]) {
+		_numberOfColumns = [_dataSource numberOfColumnsForCarouselView:self];
+		[self resizeScrollView];
+	}
+}
+
 - (CarouselViewCell *)visibleCellForIndex:(NSInteger)index {
-    
+
     for (CarouselViewCell *cell in _visibleCells) {
         if (cell.index == index) {
             //           NSLog(@"returned visible cell for index %d", index);
@@ -88,30 +113,60 @@
     return nil;
 }
 
+- (CarouselViewCell *)cellForIndex:(NSInteger)index {
+	
+	CarouselViewCell *cell = [self visibleCellForIndex:index];
+	if (!cell) {
+		cell = [self.dataSource carouselView:self cellForColumnAtIndex:index];
+		cell.index = index;
+		cell.delegate = self;
+		
+		BOOL selected = (index == _indexOfSelectedCell); 
+		cell.selected = selected;
+		
+		[_visibleCells addObject:cell];
+		[_scrollView addSubview:cell];
+		[_scrollView sendSubviewToBack:cell];
+	}
+	
+	return cell;
+}
+
+- (BOOL)isColumnVisibleForIndex:(NSInteger)index {
+	return (index >= [self firstVisibleIndex] && index <= [self lastVisibleIndex]);
+}
+
+- (NSInteger)firstVisibleIndex {
+	NSInteger firstVisibleIndex = MAX(floorf(CGRectGetMinX(_scrollView.bounds) / _columnWidth ), 0);
+	NSLog(@"[%@ %@] firstVisibleIndex:%d", [self class], NSStringFromSelector(_cmd), firstVisibleIndex);
+	
+	return firstVisibleIndex; 
+}
+
+- (NSInteger)lastVisibleIndex {
+	NSInteger lastVisibleIndex = MIN(floorf((CGRectGetMaxX(_scrollView.bounds) - 1) / _columnWidth ) + 1, _numberOfColumns);
+	NSLog(@"[%@ %@] lastVisibleIndex:%d", [self class], NSStringFromSelector(_cmd), lastVisibleIndex);
+	
+	return lastVisibleIndex;
+}
+
 - (void)layoutSubviews {
-    
+
     if (self.willRotateCalled == YES)
         return;
     
     // remove cells that are no longer visible
     for(UIView *v in _visibleCells) {
-        if (_scrollView.contentOffset.x > 0 && !CGRectIntersectsRect(v.frame, _scrollView.bounds)) {
-            [_recyclePool addObject:v];
-            [v removeFromSuperview];
-        }
+		[self removeHiddenView:v];
     }
     [_visibleCells minusSet:_recyclePool];
     
-    if (_numberOfColonms == 0) 
+    if (_numberOfColumns == 0) 
         return;
     
     // tile missing cells
-    NSUInteger firstColumn = floorf( CGRectGetMinX(_scrollView.bounds) / _colomnWidth );
-    firstColumn = MAX(firstColumn, 0);
-    NSUInteger lastColumn = floorf( (CGRectGetMaxX(_scrollView.bounds) - 1) / _colomnWidth ) + 1;
-    
-    lastColumn = MIN(lastColumn, _numberOfColonms);
-    
+	NSUInteger firstColumn = [self firstVisibleIndex];
+	NSUInteger lastColumn = [self lastVisibleIndex];    
     
     // cells layout peforms inside animation block with zero-duration to exclude animation inside animation block that inited by rotation event
     [UIView animateWithDuration:0 
@@ -119,31 +174,186 @@
                         options:UIViewAnimationOptionOverrideInheritedDuration | UIViewAnimationOptionAllowUserInteraction
                      animations:^(void) {
                          for(int column = firstColumn; column < lastColumn; ++column) {
-                             
-                             CarouselViewCell *cell = [self visibleCellForIndex:column];
-                             if (!cell) {
-                                 cell = [self.dataSource carouselView:self cellForColomnAtIndex:column];
-                                 cell.index = column;
-                                 cell.delegate = self;
-                                 
-                                 BOOL selected = (column == _indexOfSelectedCell); 
-                                 cell.selected = selected;
-                                 
-                                 [_visibleCells addObject:cell];
-                                 [_scrollView addSubview:cell];
-                                 [_scrollView sendSubviewToBack:cell];
-                             }
-                             cell.frame = CGRectMake(column * _colomnWidth, 0, _colomnWidth, self.bounds.size.height);
+                             CarouselViewCell *cell = [self cellForIndex:column];
+                             cell.frame = CGRectMake(column * _columnWidth, 0, _columnWidth, self.bounds.size.height);
                          }
                          
                      } 
                      completion:nil];
 }
 
+- (void)slideCellsFromIndex:(NSInteger)index forInsert:(BOOL)insert completion:(void(^) (BOOL finished))block {
+	
+	NSInteger maxVisibleIndex = 0;
+	CarouselViewCell *cell = [self visibleCellForIndex:index];
+	NSMutableArray *cellsToMove = [NSMutableArray array];
+	for (CarouselViewCell *visibleCell in _visibleCells) {
+		if (visibleCell.frame.origin.x >= cell.frame.origin.x) {
+			if (_indexOfSelectedCell == visibleCell.index) {
+				_indexOfSelectedCell = (insert) ? visibleCell.index + 1 : visibleCell.index - 1;
+			}
+			visibleCell.index = (insert) ? visibleCell.index + 1 : visibleCell.index - 1;
+			maxVisibleIndex = (visibleCell.index > maxVisibleIndex) ? visibleCell.index : maxVisibleIndex;
+			[cellsToMove addObject:visibleCell];
+		}
+	}
+	
+	// Removing a cell?
+	if (!insert)
+	{
+		// Do we have more cells off screen?
+		if (_numberOfColumns > maxVisibleIndex + 1) {
+			
+			NSUInteger lastColumn = [self lastVisibleIndex];
+			
+			CarouselViewCell *cell = [self cellForIndex:lastColumn];
+
+			// Add cell to array of cells to move
+			[cellsToMove addObject:cell];
+			
+			// Place cell just off the edge of the scrollView
+			cell.frame = CGRectMake((lastColumn + 1) * _columnWidth , 0, _columnWidth, self.bounds.size.height);
+		}
+	}
+	
+	[UIView animateWithDuration:ANIMATION_SPEED
+					 animations:^{
+						 for (CarouselViewCell *cell in cellsToMove) {
+							 CGRect fromFrame = cell.frame;
+							 NSInteger newX = (insert) ? fromFrame.origin.x + _columnWidth : fromFrame.origin.x - _columnWidth;
+							 CGRect toFrame = CGRectMake(newX, 0, _columnWidth, self.bounds.size.height);
+							 cell.frame = toFrame;
+						 }
+					 }
+					 completion:^(BOOL finished) {
+						 if (block) block(finished);
+						 for (UIView *view in cellsToMove) {
+							 [self removeHiddenView:view];
+						 }
+					 }];
+}
+
+- (void)slideCellsFromIndex:(NSInteger)index forInsert:(BOOL)insert {
+
+	[self slideCellsFromIndex:index forInsert:insert completion:nil];
+}
+
+- (void)animateCellAtIndex:(NSInteger)index animation:(APCarouselViewColumnAnimation)animation forInsert:(BOOL)insert completion:(void(^) (BOOL finished))block {
+	
+	CGRect hiddenRect;
+	CGRect visibleRect;
+	
+	CarouselViewCell *cell;
+	
+	if (insert) {
+		cell = [self cellForIndex:index];
+	}
+	else {
+		cell = [self visibleCellForIndex:index];
+	}
+	
+	// place new cell in appropriate column
+	if (insert) {
+		NSInteger column = 0;
+		for (CarouselViewCell *visibleCell in _visibleCells)
+		{
+			if (visibleCell.index < index) {
+				column++;
+			}
+		}
+		cell.frame = CGRectMake(column * _columnWidth, 0, _columnWidth, self.bounds.size.height);
+	}
+			
+	switch (animation) {
+		case APCarouselViewColumnAnimationFade:
+			if (insert) {
+				cell.alpha = 0.0;
+				cell.frame = visibleRect;
+			}
+			
+			[UIView animateWithDuration:ANIMATION_SPEED 
+								  delay:0
+								options:UIViewAnimationOptionAllowUserInteraction
+							 animations:^{ 
+								 cell.alpha = (insert) ? 1.0 : 0.0; 
+							 } 
+							 completion:^(BOOL finished) {
+								 if (block) block(finished);
+								 [self setNumberOfColumnsFromDelegate];
+								 [self layoutSubviews];
+							 }];
+			break;
+			
+		case APCarouselViewColumnAnimationTop:
+			hiddenRect = CGRectMake(cell.frame.origin.x, cell.frame.origin.y - self.bounds.size.height, _columnWidth, self.bounds.size.height);
+			visibleRect = CGRectMake(cell.frame.origin.x, 0, _columnWidth, self.bounds.size.height);
+			
+			if (insert) {
+				cell.alpha = 1.0;
+				cell.frame = hiddenRect;
+			}
+			
+			[UIView animateWithDuration:ANIMATION_SPEED
+								  delay:0
+								options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
+							 animations:^{
+								 cell.frame = (insert) ? visibleRect : hiddenRect;
+							 } 
+							 completion:^(BOOL finished){
+								 if (block) block(finished);
+								 [self setNumberOfColumnsFromDelegate];
+								 [self layoutSubviews];
+							 }];
+			break;
+			
+		case APCarouselViewColumnAnimationBottom:
+			hiddenRect = CGRectMake(cell.frame.origin.x, cell.frame.origin.y + self.bounds.size.height, _columnWidth, self.bounds.size.height);
+			visibleRect = CGRectMake(cell.frame.origin.x, 0, _columnWidth, self.bounds.size.height);
+			
+			if (insert) {
+				cell.alpha = 1.0;
+				cell.frame = hiddenRect;
+			}
+			
+			[UIView animateWithDuration:ANIMATION_SPEED
+								  delay:0
+								options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAllowUserInteraction
+							 animations:^{
+								 cell.frame = (insert) ? visibleRect : hiddenRect;
+							 } 
+							 completion:^(BOOL finished){
+								 if (block) block(finished);
+								 [self setNumberOfColumnsFromDelegate];
+								 [self layoutSubviews];
+							 }];
+			break;
+			
+		default:
+			if (block) block(YES);
+			[self setNumberOfColumnsFromDelegate];
+			[self layoutSubviews];
+			break;
+	}
+}
+
+- (void)animateCellAtIndex:(NSInteger)index animation:(APCarouselViewColumnAnimation)animation forInsert:(BOOL)insert {
+	
+	[self animateCellAtIndex:index animation:animation forInsert:insert completion:nil];
+}
+
+#pragma mark - UIViewController Methods
+
+- (void)setNeedsDisplay {
+
+	[super setNeedsDisplay];
+	[self setNumberOfColumnsFromDelegate];
+	[self layoutSubviews];
+}
+
 #pragma mark - Public
 
 - (CarouselViewCell *)dequeueReusableCell {
-    
+
     CarouselViewCell* cell = [_recyclePool anyObject];
 	if (cell) {
 		[[cell retain] autorelease];
@@ -153,18 +363,74 @@
 }
 
 - (void)cleanCellsRecyclePool {
-    NSLog(@"%d cells removed from recyclePool", [_recyclePool count]);
+
     [_recyclePool removeAllObjects];
 }
 
 - (NSArray *)visibleCells {
+	
     return [_visibleCells allObjects];
 }
-   
+
+- (void)insertColumnsAtIndexes:(NSArray *)indexes withColumnAnimation:(APCarouselViewColumnAnimation)animation
+{
+	// Multiple Inserts needs work
+	for (NSNumber *index in indexes) {
+		if ([self isColumnVisibleForIndex:[index intValue]])
+		{
+			CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
+			
+			if (cell) {
+				[self slideCellsFromIndex:[index intValue] forInsert:YES completion:^(BOOL finished){ 
+					[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
+				}];			
+			}
+			else
+			{
+				[self animateCellAtIndex:[index intValue] animation:animation forInsert:YES];
+			}
+		}
+	}
+}
+
+- (void)deleteColumnsAtIndexes:(NSArray *)indexes withColumnAnimation:(APCarouselViewColumnAnimation)animation
+{
+	
+	// Multiple Deletes needs work
+	for (NSNumber *index in indexes) {
+		if ([self isColumnVisibleForIndex:[index intValue]] || [index intValue] < [self firstVisibleIndex])
+		{
+			CarouselViewCell *cell = [self visibleCellForIndex:[index intValue]];
+			if (cell) {				
+				[self animateCellAtIndex:[index intValue] 
+							   animation:animation 
+							   forInsert:NO 
+							  completion:^(BOOL finished){
+								  [cell removeFromSuperview];
+								  cell.alpha = 1.0;
+								  _numberOfColumns--;
+								  [self slideCellsFromIndex:[index intValue] forInsert:NO];
+								  [_recyclePool addObject:cell];
+								  [_visibleCells removeObject:cell];
+							  }];
+			}
+		}
+		else
+		{
+			_numberOfColumns--;
+			[self resizeScrollView];
+		}
+		
+		if ([index intValue] == _indexOfSelectedCell) {
+			_indexOfSelectedCell = -1;
+		}
+	}
+}
    
 #pragma mark - CarouselViewCell Delegate
 
 - (void)clickedCellAtIndex:(NSInteger)index {
+
     if ([_delegate respondsToSelector:@selector(carouselView:didSelectCellAtIndex:)]) {
         
         if (_indexOfSelectedCell != index) {
@@ -183,6 +449,5 @@
         [_delegate carouselView:self didSelectCellAtIndex:index];
     }
 }
-
 
 @end
